@@ -51,13 +51,12 @@ ask "What is your Shopify store domain (e.g. my-store.myshopify.com)" "" store_d
 echo -e "\n✅ Using current directory as template"
 
 echo -e "\n📦 Downloading template..."
-
 # Git clone
 git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
 rm -rf temp/.git
 rm temp/install.sh
-mv temp/* .
-rm -rf temp
+cp -a temp/. .
+# rm -rf temp
 
 echo "✅ Template downloaded successfully!"
 
