@@ -54,6 +54,7 @@ echo -e "\n📦 Downloading template..."
 # Git clone
 git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
 rm -rf temp/.git
+rm -rf temp/README.md
 rm temp/install.sh
 cp -a temp/. .
 rm -rf temp
