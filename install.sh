@@ -56,7 +56,7 @@ echo -e "\n📦 Downloading template..."
 git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
 rm -rf temp/.git
 rm temp/install.sh
-mv temp/* temp/.[!.]* .
+mv temp/* .
 rm -rf temp
 
 echo "✅ Template downloaded successfully!"
