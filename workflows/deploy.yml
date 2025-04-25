@@ -1,0 +1,37 @@
+name: Build Assets
+run-name: Build Assets
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - store
+jobs:
+  build-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build assets
+        run: yarn vite:build
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Commit and Push
+        run: |
+          git add -A
+          git commit -m "chore(assets): update built assets" || echo "No changes to commit"
+          git push
