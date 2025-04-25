@@ -56,7 +56,7 @@ git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
 rm -rf temp/.git
 rm temp/install.sh
 cp -a temp/. .
-# rm -rf temp
+rm -rf temp
 
 echo "✅ Template downloaded successfully!"
 
