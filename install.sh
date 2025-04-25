@@ -56,6 +56,7 @@ git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
 rm -rf temp/.git
 rm -rf temp/README.md
 rm temp/install.sh
+mv temp/.github/workflows/deploy.dev.yml temp/.github/workflows/deploy.yml
 cp -a temp/. .
 rm -rf temp
 
