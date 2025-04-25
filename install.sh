@@ -93,5 +93,14 @@ if [ "$install_deps" = "true" ]; then
   echo "✅ Dependencies installed successfully!"
 fi
 
+# Advise user to add Vite code to theme.liquid
+echo -e "\n📝 Important: You need to add the following code to your layout/theme.liquid file:"
+echo -e "{% liquid"
+echo -e "  # Relative to entrypointsDir"
+echo -e "  render 'vite-tag' with 'store.css'"
+echo -e "  render 'vite-tag' with 'store.js'"
+echo -e "%}\n"
+echo "This will ensure your Vite assets are properly loaded in your theme."
+
 echo -e "\n🎉 Setup complete! You can now start developing with:"
 echo "  yarn dev"
