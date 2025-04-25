@@ -1,3 +1,7 @@
 {
-  "recommendations": ["emeraldwalk.runonsave"]
+  "recommendations": [
+    "emeraldwalk.runonsave",
+    "shopify.theme-check-vscode",
+    "esbenp.prettier-vscode"
+  ]
 }

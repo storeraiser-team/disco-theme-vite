@@ -3,9 +3,6 @@ run-name: Build Assets
 on:
   workflow_dispatch:
   push:
-    branches:
-      - develop
-      - store
 jobs:
   build-assets:
     runs-on: ubuntu-latest

@@ -76,14 +76,13 @@ fi
 if [ -f "package.json" ]; then
   # Replace values in package.json based on the operating system
   if [ "$is_windows" = true ]; then
-    echo "Detected Windows OS, using Windows-compatible sed commands..."
+    echo "🛅 Detected Windows OS, using Windows-compatible sed commands..."
     # Windows version (GNU sed)
     sed -i "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
     sed -i "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
     sed -i "s|\"url\": \"https://github.com/storeraiser-team/\[repo-name\]/issues\"|\"url\": \"https://github.com/storeraiser-team/$repo_name/issues\"|" package.json
     sed -i "s/\[store-domain\]/$store_domain/g" package.json
   else
-    echo "Detected Unix/Linux/MacOS, using standard sed commands..."
     # macOS/BSD version (requires empty string for -i parameter)
     sed -i '' "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
     sed -i '' "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
@@ -123,4 +122,8 @@ echo -e "%}\n"
 echo "This will ensure your Vite assets are properly loaded in your theme."
 
 echo -e "\n🎉 Setup complete! You can now start developing with:"
-echo "  yarn dev"
+if command -v yarn &> /dev/null; then
+  echo "  yarn dev"
+else
+  echo "  npm run dev"
+fi

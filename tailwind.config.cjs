@@ -1,13 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 
-let plugin = require('tailwindcss/plugin');
+import remToPxPlugin from "tailwindcss-rem-to-px";
 
-module.exports = {
-  prefix: 'd-',
+export default {
+  prefix: "d-",
   content: ['./**/*.liquid', './frontend/**/*.{js,ts,jsx,tsx}'],
-  safelist: [],
   theme: {
-    extend: {},
+    screens: {
+      sm: "320px",
+      md: "750px",
+      lg: "990px",
+      xlg: "1440px",
+      x2lg: "1920px",
+      pageMaxWidth: "1440px",
+    },
   },
-  plugins: [],
+  plugins: [
+    remToPxPlugin({
+      baseFontSize: 16,
+    }),
+    require("@tailwindcss/forms"),
+  ],
 };
