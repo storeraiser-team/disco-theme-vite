@@ -64,13 +64,32 @@ echo "✅ Template downloaded successfully!"
 # Update package.json
 echo -e "\n🔄 Updating package.json..."
 
+# Detect the operating system
+is_windows=false
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
+  is_windows=true
+elif command -v cmd.exe &> /dev/null; then
+  is_windows=true
+fi
+
 # Replace values directly in package.json with sed
 if [ -f "package.json" ]; then
-  # Replace values in package.json
-  sed -i '' "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
-  sed -i '' "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
-  sed -i '' "s|\"url\": \"https://github.com/storeraiser-team/\[repo-name\]/issues\"|\"url\": \"https://github.com/storeraiser-team/$repo_name/issues\"|" package.json
-  sed -i '' "s/\[store-domain\]/$store_domain/g" package.json
+  # Replace values in package.json based on the operating system
+  if [ "$is_windows" = true ]; then
+    echo "Detected Windows OS, using Windows-compatible sed commands..."
+    # Windows version (GNU sed)
+    sed -i "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
+    sed -i "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
+    sed -i "s|\"url\": \"https://github.com/storeraiser-team/\[repo-name\]/issues\"|\"url\": \"https://github.com/storeraiser-team/$repo_name/issues\"|" package.json
+    sed -i "s/\[store-domain\]/$store_domain/g" package.json
+  else
+    echo "Detected Unix/Linux/MacOS, using standard sed commands..."
+    # macOS/BSD version (requires empty string for -i parameter)
+    sed -i '' "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
+    sed -i '' "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
+    sed -i '' "s|\"url\": \"https://github.com/storeraiser-team/\[repo-name\]/issues\"|\"url\": \"https://github.com/storeraiser-team/$repo_name/issues\"|" package.json
+    sed -i '' "s/\[store-domain\]/$store_domain/g" package.json
+  fi
 fi
 
 echo "✅ package.json updated successfully!"
