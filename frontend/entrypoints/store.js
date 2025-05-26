@@ -2,6 +2,8 @@ import discoAlpine from "alpinejs";
 import discoMask from '@alpinejs/mask'
 import discoSplide from "@splidejs/splide";
 
+import "@splidejs/splide/css/core";
+
 discoAlpine.plugin(discoMask);
 
 discoAlpine.$dispatch = (event, detail = {}) => {
