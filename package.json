@@ -16,9 +16,7 @@
   },
   "scripts": {
     "dev": "run-p -sr \"shopify:dev -- {@}\" \"vite:dev\" --",
-    "deploy": "run-s \"vite:build\" \"shopify:push --store=[store-domain] {@}\" --",
     "shopify:dev": "shopify theme dev --store=[store-domain] --live-reload hot-reload",
-    "shopify:push": "shopify theme push --store=[store-domain]",
     "vite:dev": "vite",
     "vite:build": "vite build"
   },
