@@ -1,5 +1,16 @@
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" prefix(d);
+
+@plugin '@tailwindcss/forms';
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 320px;
+  --breakpoint-md: 750px;
+  --breakpoint-lg: 990px;
+  --breakpoint-xlg: 1440px;
+  --breakpoint-x2lg: 1920px;
+  --breakpoint-page-max-width: 1440px;
+}
 
 /* AlpineJs */
 [x-cloak] {

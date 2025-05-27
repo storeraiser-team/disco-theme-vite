@@ -1,0 +1,16 @@
+{
+  "frontend/entrypoints/store.css": {
+    "file": "store-WPYA_a41.css",
+    "src": "frontend/entrypoints/store.css",
+    "isEntry": true
+  },
+  "frontend/entrypoints/store.js": {
+    "file": "store-CnTT_gUJ.js",
+    "name": "store",
+    "src": "frontend/entrypoints/store.js",
+    "isEntry": true,
+    "css": [
+      "store-DMqL9CFT.css"
+    ]
+  }
+}
