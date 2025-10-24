@@ -6,4 +6,10 @@ export default defineConfig({
   build: {
     emptyOutDir: false,
   },
+  server: {
+    cors: true,
+    hmr: {
+      host: 'localhost',
+    },
+  },
 });
