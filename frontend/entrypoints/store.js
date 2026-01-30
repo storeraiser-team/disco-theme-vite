@@ -215,7 +215,7 @@ discoAlpine.store("product", {
   }
 });
 
-discoAlpine.data('shipping', () => ({
+discoAlpine.store("shipping", {
   loading: false,
   message: '',
   zipcode: '',
@@ -245,7 +245,7 @@ discoAlpine.data('shipping', () => ({
     let quantity = 1;
 
     if (productId) {
-      const addItem = await this.$store.cart.addItems([{ id: productId, quantity }], { showCart: false });
+      const addItem = await discoAlpine.store("cart").addItems([{ id: productId, quantity }], { showCart: false });
       quantity = ((addItem.items || []).find((item) => item.id === productId)?.quantity || 1) - 1;
     }
 
@@ -324,7 +324,7 @@ discoAlpine.data('shipping', () => ({
 
     if (productId) {
       const updates = { [productId]: quantity };
-      await this.$store.cart.updateItems(updates);
+      await discoAlpine.store("cart").updateItems(updates);
     }
 
     this.loading = false;
@@ -340,10 +340,10 @@ discoAlpine.data('shipping', () => ({
     this.shippingAddress = { zip: '', country: 'BR', province: '', city: '', address1: '' };
     this.zipcode = '';
   }
-}));
+});
 
 
-discoAlpine.store("swiper", {
+discoAlpine.store("slider", {
   mount(el) {
     const queryClasses = el?.id
       ? `#${el.id} .swiper`
@@ -390,10 +390,10 @@ discoAlpine.directive(
 document.addEventListener("alpine:initialized", () => {
   if (Shopify?.designMode) {
     document.addEventListener("shopify:section:load", (section) => {
-      discoAlpine.store("swiper").mount();
+      discoAlpine.store("slider").mount();
     });
     document.addEventListener("shopify:section:reorder", () => {
-      discoAlpine.store("swiper").mount();
+      discoAlpine.store("slider").mount();
     });
   }
 });
@@ -403,7 +403,7 @@ window.discoAlpine = discoAlpine;
 window.discoSwiper = discoSwiper;
 
 document.addEventListener("DOMContentLoaded", () => {
-  discoAlpine.store("swiper").mount();
+  discoAlpine.store("slider").mount();
 });
 
 discoAlpine.start();
