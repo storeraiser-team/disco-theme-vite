@@ -25,6 +25,7 @@
     "@alpinejs/persist": "^3.14.1",
     "alpinejs": "^3.14.1",
     "@splidejs/splide": "^4.1.4",
+    "swiper": "^11.1.15",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/vite": "^4.0.14",
     "tailwindcss-rem-to-px": "^0.1.1"
