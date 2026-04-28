@@ -5,5 +5,12 @@ export default defineConfig({
   plugins: [shopify()],
   build: {
     emptyOutDir: false,
+    rollupOptions: {
+      output: {
+        entryFileNames: '[name]-disco.js',
+        chunkFileNames: '[name]-disco.js',
+        assetFileNames: '[name]-disco.[ext]',
+      },
+    },
   },
 });
