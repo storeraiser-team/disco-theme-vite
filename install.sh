@@ -3,128 +3,177 @@
 
 set -e
 
-echo "🚀 Welcome to Disco Shopify Theme Setup Wizard!"
-echo "This script will help you set up a new Shopify theme project."
-echo
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+BOLD='\033[1m'
+DIM='\033[2m'
+NC='\033[0m'
 
-# Function to ask questions
+echo ""
+echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════╗${NC}"
+echo -e "${BOLD}${CYAN}║       Disco Theme — Setup Wizard         ║${NC}"
+echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════╝${NC}"
+echo ""
+
+# ── Perguntas iniciais ────────────────────────────────────────────────────────
 ask() {
   local prompt="$1"
   local default="$2"
   local var_name="$3"
-  
   if [ -n "$default" ]; then
-    read -p "$prompt [$default]: " answer
+    read -p "$(echo -e "  ${YELLOW}$prompt${NC} [${DIM}$default${NC}]: ")" answer
     answer=${answer:-$default}
   else
-    read -p "$prompt: " answer
+    read -p "$(echo -e "  ${YELLOW}$prompt${NC}: ")" answer
   fi
-  
   eval "$var_name=\"$answer\""
 }
 
-# Ask for store name
-ask "What is the name of your store" "" store_name
+ask "Nome da loja" "" store_name
 
-# Try to get repository name from .git/config
 repo_name=""
 if [ -f ".git/config" ]; then
-  # Extract repository URL and get the name
   repo_url=$(grep -E 'url = .*' .git/config | head -n 1 | sed 's/.*url = //g')
-  if [ -n "$repo_url" ]; then
-    # Extract repository name from URL (remove .git at the end if it exists)
-    repo_name=$(basename "$repo_url" .git)
-  fi
+  [ -n "$repo_url" ] && repo_name=$(basename "$repo_url" .git)
 fi
 
-# If repository name wasn't found, generate one based on store name
 if [ -z "$repo_name" ]; then
   default_repo=$(echo "$store_name" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g')
-  ask "What will be the repository name" "$default_repo" repo_name
+  ask "Nome do repositório" "$default_repo" repo_name
 fi
 
-# Ask for Shopify store domain
-ask "What is your Shopify store domain (e.g. my-store.myshopify.com)" "" store_domain
+ask "Domínio Shopify (ex: minha-loja.myshopify.com)" "" store_domain
 
-# Since this script is intended to be run within the template itself,
-# we assume we are already in the template directory
-echo -e "\n✅ Using current directory as template"
+echo ""
+echo -e "  ${DIM}Usando diretório atual como destino do template.${NC}"
 
-echo -e "\n📦 Downloading template..."
-# Git clone
+# ── Download do template ──────────────────────────────────────────────────────
+echo ""
+echo -e "  ${DIM}Baixando template...${NC}"
 git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
-rm -rf temp/.git
-rm -rf temp/README.md
-rm temp/install.sh
+rm -rf temp/.git temp/README.md temp/install.sh
 mv temp/.github/workflows-dev temp/.github/workflows
 cp -a temp/. .
 rm -rf temp
+echo -e "  ${GREEN}✓  Template baixado.${NC}"
 
-echo "✅ Template downloaded successfully!"
+# ── Atualizar package.json ────────────────────────────────────────────────────
+echo ""
+echo -e "  ${DIM}Atualizando package.json...${NC}"
 
-# Update package.json
-echo -e "\n🔄 Updating package.json..."
-
-# Detect the operating system
 is_windows=false
 if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
   is_windows=true
-elif command -v cmd.exe &> /dev/null; then
+elif command -v cmd.exe &>/dev/null; then
   is_windows=true
 fi
 
-# Replace values directly in package.json with sed
 if [ -f "package.json" ]; then
-  # Replace values in package.json based on the operating system
   if [ "$is_windows" = true ]; then
-    echo "🛅 Detected Windows OS, using Windows-compatible sed commands..."
-    # Windows version (GNU sed)
     sed -i "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
     sed -i "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
     sed -i "s|\"url\": \"https://github.com/storeraiser-team/\[repo-name\]/issues\"|\"url\": \"https://github.com/storeraiser-team/$repo_name/issues\"|" package.json
     sed -i "s/\[store-domain\]/$store_domain/g" package.json
   else
-    # macOS/BSD version (requires empty string for -i parameter)
     sed -i '' "s/\"name\": \"[^\"]*\"/\"name\": \"$store_name\"/" package.json
     sed -i '' "s|\"url\": \"git+https://github.com/storeraiser-team/\[repo-name\].git\"|\"url\": \"git+https://github.com/storeraiser-team/$repo_name.git\"|" package.json
     sed -i '' "s|\"url\": \"https://github.com/storeraiser-team/\[repo-name\]/issues\"|\"url\": \"https://github.com/storeraiser-team/$repo_name/issues\"|" package.json
     sed -i '' "s/\[store-domain\]/$store_domain/g" package.json
   fi
 fi
+echo -e "  ${GREEN}✓  package.json atualizado.${NC}"
 
-echo "✅ package.json updated successfully!"
-
-# Ask if dependencies should be installed
-read -p "Do you want to install dependencies now? (Y/n): " install_deps
-if [[ "$install_deps" =~ ^[Nn]$ ]]; then
-  install_deps="false"
-else
-  install_deps="true"
-fi
-
-# Install dependencies if requested
-if [ "$install_deps" = "true" ]; then
-  echo -e "\n📦 Installing dependencies..."
-  if command -v yarn &> /dev/null; then
+# ── Instalar dependências ─────────────────────────────────────────────────────
+echo ""
+read -p "$(echo -e "  ${YELLOW}Instalar dependências agora? (S/n)${NC} ")" install_deps
+install_deps="${install_deps:-S}"
+if [[ ! "$install_deps" =~ ^[Nn]$ ]]; then
+  echo ""
+  echo -e "  ${DIM}Instalando dependências...${NC}"
+  if command -v yarn &>/dev/null; then
     yarn install
   else
     npm install
   fi
-  echo "✅ Dependencies installed successfully!"
+  echo -e "  ${GREEN}✓  Dependências instaladas.${NC}"
 fi
 
-# Advise user to add Vite code to theme.liquid
-echo -e "\n📝 Important: You need to add the following code to your layout/theme.liquid file:"
-echo -e "{% liquid"
-echo -e "  # Relative to entrypointsDir"
-echo -e "  render 'vite-tag' with 'store.css'"
-echo -e "  render 'vite-tag' with 'store.js'"
-echo -e "%}\n"
-echo "This will ensure your Vite assets are properly loaded in your theme."
+# ── Injetar vite-tag no theme.liquid ─────────────────────────────────────────
+THEME_LIQUID="layout/theme.liquid"
+VITE_CSS="{%- render 'vite-tag' with 'store.css' -%}"
+VITE_JS="{%- render 'vite-tag' with 'store.js' -%}"
+ANCHOR="{{ content_for_header }}"
 
-echo -e "\n🎉 Setup complete! You can now start developing with:"
-if command -v yarn &> /dev/null; then
-  echo "  yarn dev"
+inject_vite_tags() {
+  local file="$1"
+
+  # Idempotente — pula se já estiver presente
+  if grep -qF "vite-tag" "$file"; then
+    echo -e "  ${DIM}vite-tag já presente em $file, pulando.${NC}"
+    return 0
+  fi
+
+  local line_num
+  line_num=$(grep -n "{{ content_for_header }}" "$file" | head -1 | cut -d: -f1)
+
+  if [ -z "$line_num" ]; then
+    return 1
+  fi
+
+  if [ "$is_windows" = true ]; then
+    sed -i "${line_num}a\\  $VITE_CSS\n  $VITE_JS" "$file"
+  else
+    # macOS sed: inserir duas linhas separadas após o anchor
+    sed -i '' "${line_num}a\\
+  $VITE_JS
+" "$file"
+    sed -i '' "${line_num}a\\
+  $VITE_CSS
+" "$file"
+  fi
+
+  echo -e "  ${GREEN}✓  vite-tag adicionado em $file após {{ content_for_header }}.${NC}"
+}
+
+echo ""
+if [ -f "$THEME_LIQUID" ]; then
+  read -p "$(echo -e "  ${YELLOW}Adicionar chamada dos arquivos Vite ao layout/theme.liquid? (S/n)${NC} ")" add_vite
+  add_vite="${add_vite:-S}"
+  if [[ ! "$add_vite" =~ ^[Nn]$ ]]; then
+    if ! inject_vite_tags "$THEME_LIQUID"; then
+      echo -e "  ${YELLOW}⚠  Anchor '{{ content_for_header }}' não encontrado em $THEME_LIQUID.${NC}"
+      echo -e "  ${DIM}Adicione manualmente após {{ content_for_header }}:${NC}"
+      echo ""
+      echo -e "  ${DIM}  $VITE_CSS${NC}"
+      echo -e "  ${DIM}  $VITE_JS${NC}"
+      echo ""
+    fi
+  else
+    echo ""
+    echo -e "  ${DIM}Adicione manualmente ao layout/theme.liquid após {{ content_for_header }}:${NC}"
+    echo ""
+    echo -e "  ${DIM}  $VITE_CSS${NC}"
+    echo -e "  ${DIM}  $VITE_JS${NC}"
+    echo ""
+  fi
 else
-  echo "  npm run dev"
+  echo -e "  ${YELLOW}⚠  layout/theme.liquid não encontrado.${NC}"
+  echo -e "  ${DIM}Adicione manualmente após {{ content_for_header }}:${NC}"
+  echo ""
+  echo -e "  ${DIM}  $VITE_CSS${NC}"
+  echo -e "  ${DIM}  $VITE_JS${NC}"
+  echo ""
 fi
+
+# ── Finalização ───────────────────────────────────────────────────────────────
+echo ""
+echo -e "  ${GREEN}${BOLD}✓  Setup concluído!${NC} Inicie o desenvolvimento com:"
+echo ""
+if command -v yarn &>/dev/null; then
+  echo -e "  ${BOLD}yarn dev${NC}"
+else
+  echo -e "  ${BOLD}npm run dev${NC}"
+fi
+echo ""
