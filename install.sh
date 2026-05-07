@@ -102,7 +102,7 @@ fi
 
 # ── Injetar vite-tag no theme.liquid ─────────────────────────────────────────
 THEME_LIQUID="layout/theme.liquid"
-VITE_CSS="{%- render 'vite-tag' with 'store.css' -%}"
+VITE_CSS="{%- render 'vite-tag' with 'styles.css' -%}"
 VITE_JS="{%- render 'vite-tag' with 'store.js' -%}"
 ANCHOR="{{ content_for_header }}"
 
