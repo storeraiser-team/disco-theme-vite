@@ -1,7 +1,6 @@
 import discoAlpine from "alpinejs";
 import discoMask from '@alpinejs/mask'
 import discoSwiper from "swiper/bundle";
-import 'swiper/css/bundle';
 
 discoAlpine.plugin(discoMask);
 
