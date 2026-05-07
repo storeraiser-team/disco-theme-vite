@@ -1,7 +1,7 @@
+@import 'swiper/css/bundle';
+
 @tailwind components;
 @tailwind utilities;
-
-@import 'swiper/css/bundle';
 
 [disco-cloak] {
   display: none !important;
