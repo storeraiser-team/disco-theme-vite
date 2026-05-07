@@ -55,6 +55,8 @@ echo -e "  ${DIM}Baixando template...${NC}"
 git clone https://github.com/storeraiser-team/disco-theme-vite.git temp
 rm -rf temp/.git temp/README.md temp/install.sh
 mv temp/.github/workflows-dev temp/.github/workflows
+# Remover arquivos renomeados em versões anteriores do template
+rm -f frontend/entrypoints/store.css tailwind.config.cjs postcss.config.cjs
 cp -a temp/. .
 rm -rf temp
 echo -e "  ${GREEN}✓  Template baixado.${NC}"
